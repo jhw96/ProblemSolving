@@ -39,18 +39,16 @@ public class Solution_SWEA_2819_격자판의숫자이어붙이기_D4 {
 			hash.add(str);
 			return;
 		}
+		// 상하좌우
+		int[] dy = { -1, 1, 0, 0 };
+		int[] dx = { 0, 0, -1, 1 };
 
-		str += map[x][y];
-		if (x > 0)
-			DFS(str, x - 1, y);
-		if (y > 0)
-			DFS(str, x, y - 1);
-		if (y < 3)
-			DFS(str, x, y + 1);
-		if (x < 3)
-			DFS(str, x + 1, y);
-
-		str = str.substring(0, str.length() - 1);
+		for (int i = 0; i < 4; i++) {
+			int nY = y + dy[i];
+			int nX = x + dx[i];
+			if (nY >= 0 && nX >= 0 && nY < 4 && nX < 4)
+				DFS(str + map[nY][nX], nX, nY);
+		}
 
 		return;
 	}
