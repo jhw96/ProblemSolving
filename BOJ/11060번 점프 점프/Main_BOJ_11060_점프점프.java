@@ -31,7 +31,7 @@ public class Main_BOJ_11060_점프점프 {
 		for (int i = 0; i < N; i++) {
 			int cnt = jump[i];
 			for (int j = 1; j <= cnt; j++) {
-				if (dp[i] == Integer.MAX_VALUE && i != 0)
+				if (dp[i] == Integer.MAX_VALUE)
 					continue;
 				if (i + j < N)
 					dp[i + j] = Math.min(dp[i] + 1, dp[i + j]);
