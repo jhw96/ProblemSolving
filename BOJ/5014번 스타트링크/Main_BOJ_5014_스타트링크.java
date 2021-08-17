@@ -2,59 +2,74 @@ package com.baekjoon;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main_BOJ_5014_스타트링크 {
+
+	static int F; // 최대 층
+	static int S, G; // 출발층, 도착층
+	static int U, D; // 위로 올라가는 층 수, 아래로 내려가는 층 수
+	static int answer = Integer.MAX_VALUE;
+	static boolean[] visited;
+
+	static class Node {
+		int floor;
+		int time;
+
+		Node(int floor, int time) {
+			this.floor = floor;
+			this.time = time;
+		}
+	}
+
+	private static void BFS() {
+		Queue<Node> q = new LinkedList<Node>();
+		q.add(new Node(S, 0));
+		visited[S] = true;
+
+		while (!q.isEmpty()) {
+			Node top = q.poll();
+			int floor = top.floor;
+			int time = top.time;
+
+			if (floor == G) {
+				answer = time;
+				return;
+			}
+
+			if (floor + U <= F && !visited[floor + U]) {
+				visited[floor + U] = true;
+				q.add(new Node(floor + U, time + 1));
+			}
+
+			if (floor - D >= 1 && !visited[floor - D]) {
+				visited[floor - D] = true;
+				q.add(new Node(floor - D, time + 1));
+			}
+
+		}
+	}
 
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine(), " ");
 
-		int F = Integer.parseInt(st.nextToken()); // 아파트 총 길이
-		int S = Integer.parseInt(st.nextToken()); // 시작 층
-		int G = Integer.parseInt(st.nextToken()); // 목표 층
-		int U = Integer.parseInt(st.nextToken()); // 올라가는 높이
-		int D = Integer.parseInt(st.nextToken()); // 내려가는 높이
+		F = Integer.parseInt(st.nextToken());
+		S = Integer.parseInt(st.nextToken());
+		G = Integer.parseInt(st.nextToken());
+		U = Integer.parseInt(st.nextToken());
+		D = Integer.parseInt(st.nextToken());
 
-		int[] dp = new int[F + 1]; // 해당 층으로 가는데 누르는 최소 버튼 수
-		Arrays.fill(dp, 999999999);
-		dp[S] = 0;
-
-		for (int i = S; i >= 1; i -= D) { // G보다 아래층 채우기
-			if (D == 0)
-				break;
-			if (i == S)
-				continue;
-			if (i - D >= 1) {
-				dp[i] = Math.min(dp[i], dp[i + D] + 1); // d를 눌러서 내려가는 것과 비교
-			}
-			System.out.println("아래층 채우기");
-		}
-
-		for (int i = 1; i <= F; i++) {
-			if (i + U <= F) { // U버튼 눌렀을 때 빌딩보다 높으면
-				dp[i + U] = Math.min(dp[i + U], dp[i] + 1);
-			}
-			if (i - D >= 1) { // D버튼 눌렀을 때 빌딩보다 낮으면
-				dp[i - D] = Math.min(dp[i - D], dp[i] + 1);
-			}
-		}
-		for (int i = 1; i <= F; i++) {
-			if (dp[i] == 999999999) {
-				if (i - U >= 1) {
-					dp[i] = Math.min(dp[i - U] + 1, dp[i]);
-				}
-				if (i + D <= F) {
-					dp[i] = Math.min(dp[i], dp[i + D] + 1);
-				}
-			}
-		}
-
-		if(dp[G] == 999999999)
+		visited = new boolean[F + 1];
+		
+		BFS();
+		if(answer==Integer.MAX_VALUE) {
 			System.out.println("use the stairs");
-		else
-			System.out.println(dp[G]);
+		} else {
+			System.out.println(answer);
+		}
 
 		br.close();
 	}
